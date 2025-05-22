@@ -1,5 +1,13 @@
-// src/main.ts
+// 👇 Add this block FIRST — before anything else
+import { randomUUID } from 'crypto';
 
+if (typeof global.crypto === 'undefined') {
+  (global as any).crypto = {
+    randomUUID,
+  };
+}
+
+// ✅ Now your original NestJS-related imports
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
@@ -35,3 +43,4 @@ async function bootstrap() {
   console.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();
+ 
