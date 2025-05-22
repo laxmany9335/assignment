@@ -1,5 +1,3 @@
-// src/database/database.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -11,14 +9,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('DB_HOST', 'localhost'),
-        port: configService.get('DB_PORT', 5432),
-        username: configService.get('DB_USERNAME', 'postgres'),
-        password: configService.get('DB_PASSWORD', 'Ly933556@'),
-        database: configService.get('DB_NAME', 'jobadmin'),
+        host: configService.get('DB_HOST'),
+        port: parseInt(configService.get('DB_PORT') ?? '5432', 10),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: configService.get('NODE_ENV', 'development') === 'development',
-        logging: configService.get('NODE_ENV', 'development') === 'development',
+        synchronize: configService.get('NODE_ENV') !== 'production',
+        logging: configService.get('NODE_ENV') !== 'production',
+        ssl: {
+          rejectUnauthorized: false, // ✅ This is required for Neon
+        },
+        extra: {
+          ssl: {
+            rejectUnauthorized: false, // ✅ This helps some versions of pg
+          },
+        },
       }),
     }),
   ],
